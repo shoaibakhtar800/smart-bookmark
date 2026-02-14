@@ -17,7 +17,11 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const parsed = bookmarkIdSchema.safeParse(params);
+  const { id } = await params;
+
+  const parsed = bookmarkIdSchema.safeParse({
+    id
+  });
 
   if (!parsed.success) {
     return NextResponse.json(
@@ -28,8 +32,6 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
       { status: 400 },
     );
   }
-
-  const { id } = parsed.data;
 
   const bookmark = await prisma.bookmark.findFirst({
     where: {

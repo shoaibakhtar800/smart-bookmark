@@ -2,18 +2,10 @@ import { AddBookmarkForm } from "@/components/bookmarks/add-bookmark-form";
 import { BookmarkList } from "@/components/bookmarks/bookmark-list";
 import { RealtimeBridge } from "@/components/bookmarks/realtime-bridge";
 import { AppHeader } from "@/components/layout/app-header";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 export default async function BookmarksPage() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return null;
-  }
+  const user = await requireAuth();
 
   return (
     <div className="min-h-screen bg-muted/40">

@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔖 Smart Bookmark App
 
-## Getting Started
+A modern, real-time bookmark manager built using **Next.js App Router**, **Supabase**, **Prisma**, and **TanStack Query**.
 
-First, run the development server:
+Users can authenticate using Google, save private bookmarks, and see updates reflected instantly across multiple tabs without refreshing the page.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Live Demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Live URL:** <YOUR_VERCEL_URL>
+- **GitHub Repo:** <YOUR_GITHUB_REPO_URL>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ Features
 
-To learn more about Next.js, take a look at the following resources:
+- 🔐 Google OAuth authentication (Supabase Auth)
+- 👤 Bookmarks are private per user
+- ➕ Add bookmarks with title and URL
+- 🗑️ Delete your own bookmarks
+- 🔄 Real-time sync across tabs using Supabase Realtime
+- ⚡ Fast UI with server-driven data fetching
+- 🎨 Clean UI built with shadcn/ui and Tailwind CSS
+- 🧠 Fully type-safe APIs using Prisma + Zod
+- 🛡️ Secure database access using Supabase Row Level Security (RLS)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧑‍💻 Tech Stack
 
-## Deploy on Vercel
+### Frontend
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- shadcn/ui
+- TanStack Query
+- Sonner (toasts)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Backend
+- Supabase (Auth, Database, Realtime)
+- Prisma ORM
+- PostgreSQL
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🏗️ Architecture Overview
+
+- **Server Components**
+  - Route protection
+  - Authentication checks
+  - Redirect logic
+  - Page composition
+
+- **Client Components**
+  - Forms and buttons
+  - TanStack Query hooks
+  - Supabase Realtime listeners
+  - Toast notifications
+
+- **State Management**
+  - Server state handled by TanStack Query
+  - Realtime events invalidate query cache instead of mutating UI state directly
+
+- **Database Access**
+  - Prisma ORM for all DB operations
+  - Supabase Postgres as the database
+  - RLS for user-level data isolation
+
+---
+
+## 🔐 Authentication & Route Protection
+
+The app enforces authentication at the **server level**.
+
+### Rules:
+- Logged-out users cannot access protected routes like `/bookmarks`
+- Logged-in users cannot access the login page (`/`)
+- Server-side guards (`requireAuth`, `requireGuest`) enforce redirects
+- Optional client-side hooks prevent UI flicker during hydration
+
+This ensures both **security and smooth UX**.
+
+---
+
+## 🔄 Real-time Updates
+
+- Supabase Realtime listens to changes on the `Bookmark` table
+- Events are filtered by `userId`
+- On insert/delete:
+  - TanStack Query cache is invalidated
+  - Bookmarks are re-fetched automatically
+- UI stays in sync across multiple tabs without manual state management
+
+---
+
+## 🛡️ Database Security (Row Level Security)
+
+Supabase Row Level Security (RLS) policies ensure:
+
+- Users can read only their own bookmarks
+- Users can insert bookmarks only for themselves
+- Users can delete only their own bookmarks
+
+Policies compare `auth.uid()` with the bookmark owner directly at the database level.
+
+This guarantees data isolation even if APIs are bypassed.
+
+---
+
+## 🎨 UX & UI Polish
+
+- Skeleton loaders for loading states
+- Toast notifications for success and error feedback
+- Graceful error handling using Next.js error boundaries
+- Animated empty state for first-time users
+- Disabled states during async actions to prevent duplicate requests
+
+---
+
+## ⚠️ Challenges Faced & Solutions
+
+### 1. Supabase OAuth + App Router Cookies
+- **Problem:** Cookies cannot be modified inside Server Components
+- **Solution:** Moved OAuth exchange logic to a dedicated route handler
+
+### 2. Prisma v7 Adapter Requirement
+- **Problem:** Prisma required explicit adapter configuration
+- **Solution:** Used `@prisma/adapter-pg` with pooled and direct database URLs
+
+### 3. Async `params` and `searchParams`
+- **Problem:** Route params and searchParams are async in the latest App Router
+- **Solution:** Explicitly awaited them before access
+
+### 4. Realtime + UI Consistency
+- **Problem:** Avoiding inconsistent UI across tabs
+- **Solution:** Used Realtime only to invalidate TanStack Query cache
+
+### 5. Over-strict UUID Validation
+- **Problem:** Strict UUID validation caused delete failures
+- **Solution:** Relaxed validation and relied on database ownership checks
+
+---
+
+## 📦 Environment Variables
+
+```env
+# Prisma database connections
+DATABASE_URL=postgresql://...
+DIRECT_URL=postgresql://...
+
+# Supabase configuration
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Supabase publishable key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key

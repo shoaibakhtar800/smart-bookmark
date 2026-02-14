@@ -3,13 +3,20 @@
 import { useBookmarks } from "@/lib/react-query/bookmarks";
 import { BookmarkCard } from "./bookmark-card";
 import { EmptyState } from "./empty-state";
+import { BookmarkSkeleton } from "./bookmark-skeleton";
 
 export function BookmarkList() {
-  const { data, isLoading } = useBookmarks();
+  const { data, isLoading, isError } = useBookmarks();
 
   if (isLoading) {
+    return <BookmarkSkeleton />;
+  }
+
+  if (isError) {
     return (
-      <div className="text-sm text-muted-foreground">Loading bookmarks…</div>
+      <div className="text-sm text-destructive">
+        Failed to load bookmarks
+      </div>
     );
   }
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/lib/react-query/provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={`${ubuntu.variable} font-sans antialiased`}>
         <ReactQueryProvider>
           {children}
+          <Toaster position="bottom-right" />
         </ReactQueryProvider>
       </body>
     </html>

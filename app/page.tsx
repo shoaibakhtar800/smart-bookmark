@@ -1,19 +1,12 @@
-"use client";
+import { requireGuest } from "@/lib/auth/require-guest";
+import { LoginCard } from "@/components/auth/login-card";
 
-import { Button } from "@/components/ui/button";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+export default async function HomePage() {
+  await requireGuest();
 
-export default function Home() {
-  const supabase = createSupabaseBrowserClient();
-
-  const login = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback`
-      }
-    });
-  };
-
-  return <Button onClick={login}>Login with Google</Button>;
+  return (
+    <main className="min-h-screen flex items-center justify-center">
+      <LoginCard />
+    </main>
+  );
 }
