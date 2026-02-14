@@ -5,9 +5,7 @@ import { bookmarkIdSchema } from "@/lib/validators/bookmark-id";
 import z from "zod";
 
 type RouteParams = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
 export async function DELETE(_req: Request, { params }: RouteParams) {
