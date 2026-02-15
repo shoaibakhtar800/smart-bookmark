@@ -8,8 +8,8 @@ Users can authenticate using Google, save private bookmarks, and see updates ref
 
 ## 🚀 Live Demo
 
-- **Live URL:** <YOUR_VERCEL_URL>
-- **GitHub Repo:** <YOUR_GITHUB_REPO_URL>
+- **Live URL:** [LIVE_DEMO](https://smart-bookmark-beige.vercel.app)
+- **GitHub Repo:** [SOURCE_CODE](https://github.com/shoaibakhtar800/smart-bookmark)
 
 ---
 
